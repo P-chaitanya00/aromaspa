@@ -1,6 +1,103 @@
 document.addEventListener('DOMContentLoaded', () => {
     gsap.registerPlugin(ScrollTrigger);
 
+    // ═══ TREATMENT PRICING DATA ═══
+    const treatmentPricing = {
+        'Balinese Massage': [
+            { duration: '60 MIN', price: '₹3,500' },
+            { duration: '90 MIN', price: '₹4,500' },
+            { duration: '120 MIN', price: '₹5,500' }
+        ],
+        'Aroma Therapy (Hot Oil)': [
+            { duration: '60 MIN', price: '₹3,500' },
+            { duration: '90 MIN', price: '₹4,500' },
+            { duration: '120 MIN', price: '₹5,500' }
+        ],
+        'Body Scrub + Oil Therapy': [
+            { duration: '60 MIN', price: '₹4,000' },
+            { duration: '90 MIN', price: '₹5,000' },
+            { duration: '120 MIN', price: '₹6,000' }
+        ],
+        'Wine': [
+            { duration: '90 MIN', price: '₹12,000' },
+            { duration: '120 MIN', price: '₹15,000' }
+        ],
+        'VIP Rooms': [
+            { duration: '60 MIN', price: '₹5,500' },
+            { duration: '90 MIN', price: '₹7,500' },
+            { duration: '120 MIN', price: '₹9,000' }
+        ],
+        'VVIP Rooms': [
+            { duration: '60 MIN', price: '₹8,000' },
+            { duration: '90 MIN', price: '₹11,000' },
+            { duration: '120 MIN', price: '₹15,000' }
+        ],
+        'Turkish Hammam': [
+            { duration: '60 MIN', price: '₹6,000' },
+            { duration: '90 MIN', price: '₹9,000' },
+            { duration: '120 MIN', price: '₹12,000' }
+        ],
+        'Basic Package': [
+            { duration: 'Full Session', price: '₹35,000' }
+        ],
+        'Couple Package': [
+            { duration: 'Full Session', price: '₹50,000' }
+        ],
+        'Friends Package': [
+            { duration: 'Full Session', price: '₹1,00,000' }
+        ]
+    };
+
+    // Helper: populate duration dropdown from treatment selection
+    function populateDuration(treatmentVal, durationSelect, priceInput) {
+        durationSelect.innerHTML = '<option value="" disabled selected hidden></option>';
+        priceInput.value = '';
+        const options = treatmentPricing[treatmentVal];
+        if (!options || !options.length) {
+            durationSelect.disabled = true;
+            return;
+        }
+        options.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = opt.duration;
+            o.textContent = opt.duration;
+            o.dataset.price = opt.price;
+            durationSelect.appendChild(o);
+        });
+        durationSelect.disabled = false;
+        // Auto-select if only one option
+        if (options.length === 1) {
+            durationSelect.selectedIndex = 1;
+            priceInput.value = options[0].price;
+        }
+    }
+
+    // Helper: set price from selected duration
+    function setPrice(durationSelect, priceInput) {
+        const selected = durationSelect.options[durationSelect.selectedIndex];
+        if (selected && selected.dataset.price) {
+            priceInput.value = selected.dataset.price;
+        }
+    }
+
+    // Wire up MAIN booking form
+    const bTreat = document.getElementById('b-treat');
+    const bDuration = document.getElementById('b-duration');
+    const bPrice = document.getElementById('b-price');
+    if (bTreat && bDuration && bPrice) {
+        bTreat.addEventListener('change', () => populateDuration(bTreat.value, bDuration, bPrice));
+        bDuration.addEventListener('change', () => setPrice(bDuration, bPrice));
+    }
+
+    // Wire up BRANCH booking form
+    const bpTreat = document.getElementById('bp-b-treat');
+    const bpDuration = document.getElementById('bp-b-duration');
+    const bpPrice = document.getElementById('bp-b-price');
+    if (bpTreat && bpDuration && bpPrice) {
+        bpTreat.addEventListener('change', () => populateDuration(bpTreat.value, bpDuration, bpPrice));
+        bpDuration.addEventListener('change', () => setPrice(bpDuration, bpPrice));
+    }
+
     // ═══ PRELOADER ═══
     window.addEventListener('load', () => {
         gsap.to('#preloader', {
@@ -303,6 +400,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 waNumber = '919122218885';
             }
 
+            const duration = document.getElementById('b-duration').value;
+            const price = document.getElementById('b-price').value;
+
             const message = `*AROMA INTERNATIONAL SPA*\n` +
                 `*Appointment Request*\n` +
                 `━━━━━━━━━━━━━━━━━━━━\n\n` +
@@ -311,7 +411,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Phone : ${phone}\n` +
                 `Date : ${date}\n` +
                 `Time : ${time}\n` +
-                `Treatment : ${treatment || 'Not specified'}\n\n` +
+                `Treatment : ${treatment || 'Not specified'}\n` +
+                `Duration : ${duration || 'Not specified'}\n` +
+                `Price : ${price || 'Not specified'}\n\n` +
                 `━━━━━━━━━━━━━━━━━━━━\n` +
                 `I would like to book an appointment. Kindly confirm the availability. Thank you.`;
 
@@ -468,6 +570,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const time = document.getElementById('bp-b-time').value;
             const treatment = document.getElementById('bp-b-treat').value;
 
+            const duration = document.getElementById('bp-b-duration').value;
+            const price = document.getElementById('bp-b-price').value;
+
             const message = `*AROMA INTERNATIONAL SPA*\n` +
                 `*Appointment Request*\n` +
                 `━━━━━━━━━━━━━━━━━━━━\n\n` +
@@ -476,7 +581,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Phone : ${phone}\n` +
                 `Date : ${date}\n` +
                 `Time : ${time}\n` +
-                `Treatment : ${treatment}\n\n` +
+                `Treatment : ${treatment}\n` +
+                `Duration : ${duration || 'Not specified'}\n` +
+                `Price : ${price || 'Not specified'}\n\n` +
                 `━━━━━━━━━━━━━━━━━━━━\n` +
                 `I would like to book an appointment. Kindly confirm the availability. Thank you.`;
 

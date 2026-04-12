@@ -1003,6 +1003,16 @@
                             </select>
                             <label for="b-treat" class="active-label">Fill Treatment Selection</label>
                         </div>
+                        <div class="form-float">
+                            <select name="duration" id="b-duration" required disabled>
+                                <option value="" disabled selected hidden></option>
+                            </select>
+                            <label for="b-duration" class="active-label">Select Duration</label>
+                        </div>
+                        <div class="form-float">
+                            <input type="text" name="price" id="b-price" placeholder=" " readonly style="color:var(--gold);font-weight:500;">
+                            <label for="b-price" class="active-label">Estimated Price</label>
+                        </div>
                     </div>
                     <button type="submit" class="cta-primary full-w"><span>Confirm Reservation</span></button>
                 </form>
@@ -1129,6 +1139,16 @@
                                     <option value="" disabled selected hidden></option>
                                 </select>
                                 <label for="bp-b-treat" class="active-label">Fill Treatment selection</label>
+                            </div>
+                            <div class="form-float bp-treat-wrap">
+                                <select name="duration" id="bp-b-duration" required disabled>
+                                    <option value="" disabled selected hidden></option>
+                                </select>
+                                <label for="bp-b-duration" class="active-label">Select Duration</label>
+                            </div>
+                            <div class="form-float bp-treat-wrap">
+                                <input type="text" name="price" id="bp-b-price" placeholder=" " readonly style="color:var(--gold);font-weight:500;">
+                                <label for="bp-b-price" class="active-label">Estimated Price</label>
                             </div>
                             <button type="submit" class="cta-primary full-w bp-submit-btn">
                                 <svg viewBox="0 0 448 512" width="18" height="18">
