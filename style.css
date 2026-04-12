@@ -1446,7 +1446,8 @@ h1 .accent {
 .modal-content.split-modal {
     background: var(--dark-2);
     width: 95%;
-    max-width: 1000px;
+    max-width: min(1000px, 95vw);
+    max-height: 90vh;
     position: relative;
     z-index: 10;
     border: 1px solid rgba(200, 169, 81, 0.1);
@@ -1454,6 +1455,7 @@ h1 .accent {
     border-radius: 8px;
     display: flex;
     overflow: hidden;
+    overflow-y: auto;
 }
 
 .modal-left {
@@ -1837,14 +1839,15 @@ h1 .accent {
     left: 50%;
     transform: translate(-50%, -50%) scale(0.95);
     width: 90%;
-    max-width: 750px;
+    max-width: min(750px, 95vw);
     height: auto;
-    max-height: 550px;
+    max-height: min(550px, 90vh);
     background: var(--dark-2);
     border: 1px solid rgba(200, 169, 81, 0.2);
     box-shadow: 0 50px 120px rgba(0, 0, 0, 0.9);
     border-radius: 30px;
     overflow: hidden;
+    overflow-y: auto;
     opacity: 0;
     visibility: hidden;
     display: flex;
@@ -1887,6 +1890,28 @@ h1 .accent {
     display: grid;
     grid-template-columns: 40% 60%;
     width: 100%;
+}
+
+/* Auto-stack the popup grid when it gets narrow */
+@media (max-width: 600px) {
+    .branch-popup-inner {
+        grid-template-columns: 1fr;
+    }
+
+    .branch-popup-left {
+        min-height: 180px;
+        max-height: 180px;
+    }
+
+    .branch-popup-panel {
+        max-height: 90vh;
+        border-radius: 16px;
+        flex-direction: column;
+    }
+
+    .branch-popup-right {
+        padding: 1.5rem 1.2rem;
+    }
 }
 
 .branch-popup-left {
