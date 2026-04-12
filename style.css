@@ -617,6 +617,163 @@ h1 .accent {
     font-size: 1.4rem;
     margin-right: 0.5rem;
 }
+/* ─── Treatment Carousel ─── */
+.treatment-carousel {
+    padding: 4rem 0 2rem;
+    overflow: hidden;
+    position: relative;
+    background: var(--dark);
+}
+
+.treatment-carousel::before,
+.treatment-carousel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 120px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.treatment-carousel::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--dark) 0%, transparent 100%);
+}
+
+.treatment-carousel::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--dark) 0%, transparent 100%);
+}
+
+.carousel-track {
+    display: flex;
+    gap: 3rem;
+    animation: carouselScroll 35s linear infinite;
+    will-change: transform;
+    width: max-content;
+}
+
+.carousel-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes carouselScroll {
+    0% {
+        transform: translate3d(0, 0, 0);
+    }
+    100% {
+        transform: translate3d(-50%, 0, 0);
+    }
+}
+
+.carousel-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.4s var(--ease);
+}
+
+.carousel-item:hover {
+    transform: translateY(-8px);
+}
+
+.carousel-circle {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(200, 169, 81, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 4px rgba(200, 169, 81, 0.06);
+    transition: all 0.4s var(--ease);
+    position: relative;
+}
+
+.carousel-circle::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(200, 169, 81, 0.08), transparent 60%);
+    pointer-events: none;
+}
+
+.carousel-item:hover .carousel-circle {
+    border-color: var(--gold);
+    box-shadow: 0 12px 40px rgba(200, 169, 81, 0.25), 0 0 0 6px rgba(200, 169, 81, 0.1);
+    transform: scale(1.08);
+}
+
+.carousel-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ease);
+}
+
+.carousel-item:hover .carousel-circle img {
+    transform: scale(1.1);
+}
+
+.carousel-label {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 2.5px;
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 300;
+    transition: color 0.3s var(--ease);
+    white-space: nowrap;
+}
+
+.carousel-item:hover .carousel-label {
+    color: var(--gold);
+}
+
+@media (max-width: 768px) {
+    .treatment-carousel {
+        padding: 3rem 0 1.5rem;
+    }
+
+    .carousel-track {
+        gap: 2rem;
+        animation-duration: 25s;
+    }
+
+    .carousel-circle {
+        width: 100px;
+        height: 100px;
+    }
+
+    .carousel-label {
+        font-size: 0.68rem;
+        letter-spacing: 1.5px;
+    }
+
+    .treatment-carousel::before,
+    .treatment-carousel::after {
+        width: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .carousel-circle {
+        width: 80px;
+        height: 80px;
+    }
+
+    .carousel-track {
+        gap: 1.5rem;
+        animation-duration: 20s;
+    }
+
+    .carousel-label {
+        font-size: 0.6rem;
+    }
+}
 
 /* ─── Menu ─── */
 #menu {

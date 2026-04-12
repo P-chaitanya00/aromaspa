@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getBranchImages(branchIdx) {
         const stored = localStorage.getItem(`aromaBranchImages_${branchIdx}`);
         if (stored) {
-            try { return JSON.parse(stored); } catch(e) { /* ignore */ }
+            try { return JSON.parse(stored); } catch (e) { /* ignore */ }
         }
         return [];
     }
@@ -755,7 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getOffers() {
         const stored = localStorage.getItem('aromaOffers');
         if (stored) {
-            try { return JSON.parse(stored); } catch(e) { /* ignore */ }
+            try { return JSON.parse(stored); } catch (e) { /* ignore */ }
         }
         return defaultOffers;
     }
