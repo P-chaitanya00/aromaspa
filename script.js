@@ -123,9 +123,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ═══ NAVBAR ═══
     const navbar = document.getElementById('navbar');
+    let lastScrollY = 0;
+    let navbarTicking = false;
     window.addEventListener('scroll', () => {
-        navbar.classList.toggle('scrolled', window.scrollY > 80);
-    });
+        lastScrollY = window.scrollY;
+        if (!navbarTicking) {
+            requestAnimationFrame(() => {
+                navbar.classList.toggle('scrolled', lastScrollY > 80);
+                navbarTicking = false;
+            });
+            navbarTicking = true;
+        }
+    }, { passive: true });
 
     // ═══ MOBILE MENU ═══
     const menuToggle = document.getElementById('menu-toggle');
@@ -244,11 +253,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ═══ PARALLAX ═══
-    window.addEventListener('scroll', () => {
-        const scrolled = window.scrollY;
-        if (scrolled < window.innerHeight) {
-            gsap.to('.hero-bg img', { y: scrolled * 0.3, duration: 0, ease: 'none' });
+    // ═══ PARALLAX (ScrollTrigger-based for smooth performance) ═══
+    gsap.to('.hero-bg img', {
+        y: () => window.innerHeight * 0.3,
+        ease: 'none',
+        scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: true
         }
     });
 
