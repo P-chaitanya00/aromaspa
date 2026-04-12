@@ -531,13 +531,12 @@ document.addEventListener('DOMContentLoaded', () => {
         branchPopup.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // Animate in
-        gsap.fromTo('.branch-popup-backdrop', { opacity: 0 }, { opacity: 1, duration: 0.3 });
+        // Animate in (fast, no blur)
+        gsap.fromTo('.branch-popup-backdrop', { opacity: 0 }, { opacity: 1, duration: 0.2 });
         gsap.fromTo('.branch-popup-panel',
-            { opacity: 0, scale: 0.9, xPercent: -50, yPercent: -45 },
-            { opacity: 1, scale: 1, xPercent: -50, yPercent: -50, duration: 0.4, ease: 'power2.out' }
+            { opacity: 0, scale: 0.95, xPercent: -50, yPercent: -48 },
+            { opacity: 1, scale: 1, xPercent: -50, yPercent: -50, duration: 0.25, ease: 'power2.out' }
         );
-        gsap.from('.bp-info-item', { y: 15, opacity: 0, duration: 0.4, stagger: 0.05, delay: 0.15, ease: 'power2.out' });
 
         // Render gallery images for this branch
         renderGalleryStack();
@@ -546,10 +545,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeBranchPopup() {
         gsap.to('.branch-popup-panel', {
-            opacity: 0, scale: 0.9, xPercent: -50, yPercent: -45, duration: 0.3, ease: 'power2.in'
+            opacity: 0, scale: 0.95, xPercent: -50, yPercent: -48, duration: 0.2, ease: 'power2.in'
         });
         gsap.to('.branch-popup-backdrop', {
-            opacity: 0, duration: 0.4, delay: 0.1,
+            opacity: 0, duration: 0.2,
             onComplete: () => {
                 branchPopup.classList.remove('active');
                 document.body.style.overflow = '';

@@ -1439,8 +1439,7 @@ h1 .accent {
 .modal-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.9);
-    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.92);
 }
 
 .modal-content.split-modal {
@@ -1822,11 +1821,9 @@ h1 .accent {
 .branch-popup-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(0, 0, 0, 0.88);
     opacity: 0;
-    transition: opacity 0.5s var(--ease);
+    transition: opacity 0.25s ease;
 }
 
 #branch-popup.active .branch-popup-backdrop {
