@@ -1994,6 +1994,29 @@ h1 .accent {
     line-height: 1.5;
 }
 
+.bp-add-img-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(200, 169, 81, 0.1);
+    border: 1px solid rgba(200, 169, 81, 0.3);
+    color: var(--gold);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: background 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bp-add-img-btn:active {
+    background: rgba(200, 169, 81, 0.25);
+}
+
 .bp-services h3,
 .bp-booking h3 {
     font-family: var(--serif);
