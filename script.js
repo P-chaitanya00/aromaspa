@@ -649,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = GALLERY_BINS[branchIdx];
         if (url) {
             fetch(url, {
-                method: 'POST',
+                method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ images: images })
             }).catch(err => console.warn('Cloud save failed:', err));
