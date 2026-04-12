@@ -4,5 +4,19 @@
             "source": "/assets/:path*",
             "destination": "/:path*"
         }
+    ],
+    "headers": [
+        {
+            "source": "/style.css",
+            "headers": [
+                { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+            ]
+        },
+        {
+            "source": "/script.js",
+            "headers": [
+                { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+            ]
+        }
     ]
 }
