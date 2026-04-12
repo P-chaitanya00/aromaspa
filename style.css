@@ -273,6 +273,7 @@ a {
 /* ─── Hero ─── */
 #hero {
     height: 100vh;
+    height: 100dvh;
     min-height: 600px;
     position: relative;
     display: flex;
@@ -2151,6 +2152,16 @@ h1 .accent {
         padding-left: 5%;
     }
 
+    /* Hero must NOT clip branch cards on mobile */
+    #hero {
+        height: auto;
+        min-height: 100vh;
+        min-height: 100dvh;
+        padding-top: 90px;
+        padding-bottom: 2rem;
+        overflow: visible;
+    }
+
     .hero-branches-content {
         padding: 0 1rem;
     }
@@ -2162,7 +2173,7 @@ h1 .accent {
     }
 
     .hero-branches-grid .branch-card-img {
-        height: 220px;
+        height: 280px;
     }
 
     .hero-scroll {
@@ -2462,7 +2473,7 @@ h1 .accent {
     }
 
     .hero-branches-grid .branch-card-img {
-        height: 180px;
+        height: 240px;
     }
 
     .hero-branches-grid {
