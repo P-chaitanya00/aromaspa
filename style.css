@@ -616,8 +616,9 @@ h1 .accent {
 
 .ticker-num {
     color: var(--gold);
-    font-family: var(--serif);
-    font-size: 1.4rem;
+    font-family: var(--sans);
+    font-size: 1.3rem;
+    font-weight: 500;
     margin-right: 0.5rem;
 }
 /* ─── Treatment Carousel ─── */
