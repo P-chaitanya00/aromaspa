@@ -621,7 +621,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentGalleryImages = [];
     let currentLbIdx = 0;
 
+    // Cloud storage endpoints for gallery images (npoint.io)
+    const GALLERY_BINS = {
+        0: 'https://api.npoint.io/f740f07f1434ba3f80fe',  // Guntur
+        1: 'https://api.npoint.io/db936c8b627b6ccc351e'   // Hyderabad
+    };
+
+    // Local cache for instant display
+    let galleryCache = { 0: null, 1: null };
+
     function getBranchImages(branchIdx) {
+        // Return from cache if loaded
+        if (galleryCache[branchIdx] !== null) return galleryCache[branchIdx];
+        // Fallback to localStorage while cloud loads
         const stored = localStorage.getItem(`aromaBranchImages_${branchIdx}`);
         if (stored) {
             try { return JSON.parse(stored); } catch (e) { /* ignore */ }
@@ -630,8 +642,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function saveBranchImages(branchIdx, images) {
+        // Save to localStorage (instant cache)
         localStorage.setItem(`aromaBranchImages_${branchIdx}`, JSON.stringify(images));
+        galleryCache[branchIdx] = images;
+        // Save to cloud (persistent for all devices)
+        const url = GALLERY_BINS[branchIdx];
+        if (url) {
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ images: images })
+            }).catch(err => console.warn('Cloud save failed:', err));
+        }
     }
+
+    // Load gallery from cloud on page load
+    function loadCloudGallery(branchIdx) {
+        const url = GALLERY_BINS[branchIdx];
+        if (!url) return;
+        fetch(url)
+            .then(r => r.json())
+            .then(data => {
+                if (data && Array.isArray(data.images)) {
+                    galleryCache[branchIdx] = data.images;
+                    localStorage.setItem(`aromaBranchImages_${branchIdx}`, JSON.stringify(data.images));
+                    // Re-render if this branch popup is currently open
+                    if (branchPopup.classList.contains('active') && currentBranchIdx === branchIdx) {
+                        renderGalleryStack();
+                        updateAddBtnState();
+                    }
+                }
+            })
+            .catch(err => console.warn('Cloud load failed:', err));
+    }
+    // Pre-load both branches from cloud
+    loadCloudGallery(0);
+    loadCloudGallery(1);
 
     function renderGalleryStack() {
         const images = getBranchImages(currentBranchIdx);
