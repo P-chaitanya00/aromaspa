@@ -586,12 +586,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Upload button click
+    // Upload button click — PIN protected
     if (addImgBtn && imgUpload) {
         addImgBtn.addEventListener('click', () => {
             const images = getBranchImages(currentBranchIdx);
             if (images.length >= MAX_BRANCH_IMAGES) {
                 showImageToast(`⚠️ Maximum ${MAX_BRANCH_IMAGES} photos allowed per branch. Delete some to add new ones.`);
+                return;
+            }
+            // Require PIN before allowing image upload
+            if (!isAdminAuth) {
+                openAdminPinModal(() => {
+                    imgUpload.click();
+                });
                 return;
             }
             imgUpload.click();
@@ -696,25 +703,35 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'ArrowRight' && galleryLbNext) galleryLbNext.click();
     });
 
-    // Delete image from lightbox
+    // Delete image from lightbox — PIN protected
     const galleryLbDelete = document.getElementById('gallery-lb-delete');
+    function doDeleteImage() {
+        const images = getBranchImages(currentBranchIdx);
+        if (!images.length) return;
+        images.splice(currentLbIdx, 1);
+        saveBranchImages(currentBranchIdx, images);
+        currentGalleryImages = images;
+        updateAddBtnState();
+        showImageToast(`🗑️ Photo deleted. (${images.length}/${MAX_BRANCH_IMAGES})`);
+        if (images.length === 0) {
+            closeGalleryLightbox();
+            renderGalleryStack();
+            return;
+        }
+        if (currentLbIdx >= images.length) currentLbIdx = images.length - 1;
+        updateLightboxImage();
+        renderGalleryStack();
+    }
     if (galleryLbDelete) {
         galleryLbDelete.addEventListener('click', () => {
-            const images = getBranchImages(currentBranchIdx);
-            if (!images.length) return;
-            images.splice(currentLbIdx, 1);
-            saveBranchImages(currentBranchIdx, images);
-            currentGalleryImages = images;
-            updateAddBtnState();
-            showImageToast(`🗑️ Photo deleted. (${images.length}/${MAX_BRANCH_IMAGES})`);
-            if (images.length === 0) {
-                closeGalleryLightbox();
-                renderGalleryStack();
+            // Require PIN before allowing image delete
+            if (!isAdminAuth) {
+                openAdminPinModal(() => {
+                    doDeleteImage();
+                });
                 return;
             }
-            if (currentLbIdx >= images.length) currentLbIdx = images.length - 1;
-            updateLightboxImage();
-            renderGalleryStack();
+            doDeleteImage();
         });
     }
 
@@ -912,6 +929,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Always show image add/delete buttons (PIN is checked on click)
+    if (addImgBtn) addImgBtn.style.display = '';
+    if (galleryLbDelete) galleryLbDelete.style.display = '';
+
     // If already authenticated this session, show admin elements
     if (isAdminAuth) {
         showAdminElements();
@@ -940,7 +961,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (adminPinModal) {
             adminPinModal.classList.remove('active');
             document.body.style.overflow = '';
-            pendingAdminAction = null;
+            // Don't nullify pendingAdminAction here — 
+            // it's needed by the submit handler after closing
         }
     }
 
@@ -977,11 +999,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 isAdminAuth = true;
                 sessionStorage.setItem('aromaAdmin', 'true');
                 showAdminElements();
+                // Save callback before closing (closeAdminPinModal doesn't nullify it anymore)
+                const callback = pendingAdminAction;
+                pendingAdminAction = null;
                 closeAdminPinModal();
-                // Execute the pending action
-                if (pendingAdminAction) {
-                    pendingAdminAction();
-                    pendingAdminAction = null;
+                // Execute the pending action AFTER closing the PIN modal
+                if (callback) {
+                    setTimeout(() => callback(), 150);
                 }
             } else {
                 if (adminPinError) {
@@ -1033,17 +1057,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Override add photo button — require PIN if not authenticated
-    if (addImgBtn) {
-        addImgBtn.addEventListener('click', (e) => {
-            if (!isAdminAuth) {
-                e.stopImmediatePropagation();
-                openAdminPinModal(() => {
-                    imgUpload?.click();
-                });
-            }
-        }, true);
-    }
+    // Note: PIN check for add photo button is now handled inline in the click handler above (line ~590)
 
     // ═══ IMAGE PROTECTION — Prevent Download ═══
     // Disable right-click on all images
