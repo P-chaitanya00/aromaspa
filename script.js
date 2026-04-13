@@ -395,6 +395,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ═══ FRANCHISE QUICK FORM ═══
+    const fqForm = document.getElementById('franchise-quick-form');
+    if (fqForm) {
+        fqForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('fq-name').value.trim();
+            const phone = document.getElementById('fq-phone').value.trim();
+            const address = document.getElementById('fq-address').value.trim();
+            const type = document.getElementById('fq-type').value;
+            const budget = document.getElementById('fq-budget').value;
+
+            const msg =
+`*AROMA INTERNATIONAL SPA*
+*Franchise Enquiry*
+━━━━━━━━━━━━━━━━━━━━
+
+Name    : ${name}
+Phone   : ${phone}
+Address : ${address}
+Type    : ${type}
+Budget  : ${budget}
+
+━━━━━━━━━━━━━━━━━━━━
+I am interested in the franchise opportunity. Please contact me. Thank you!`;
+
+            window.open(`https://wa.me/917378122122?text=${encodeURIComponent(msg)}`, '_blank');
+
+            fqForm.innerHTML = `
+                <div style="text-align:center;padding:2rem 0;">
+                    <div style="width:50px;height:50px;border:2px solid var(--gold);border-radius:50%;margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                    <h3 style="font-family:var(--serif);font-size:1.5rem;font-weight:300;margin-bottom:0.5rem;">Enquiry <em style="color:var(--gold)">Sent</em></h3>
+                    <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;font-weight:300;">Our franchise team will contact you shortly.</p>
+                </div>`;
+        });
+    }
     // Form submit — route to correct WhatsApp number based on branch
     const form = document.getElementById('appointment-form');
     if (form) {
