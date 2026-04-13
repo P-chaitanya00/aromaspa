@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gsap.registerPlugin(ScrollTrigger);
 
     // Early declarations for admin system (defined fully later)
-    var isAdminAuth = sessionStorage.getItem('aromaAdmin') === 'true';
+    var isAdminAuth = false; // always require PIN
     var openAdminPinModal; // assigned in ADMIN PIN SYSTEM section
 
     // ═══ TREATMENT PRICING DATA ═══
@@ -1480,14 +1480,10 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
         adminPinSubmit.addEventListener('click', () => {
             const entered = getEnteredPIN();
             if (entered === ADMIN_PIN) {
-                isAdminAuth = true;
-                sessionStorage.setItem('aromaAdmin', 'true');
-                showAdminElements();
-                // Save callback before closing (closeAdminPinModal doesn't nullify it anymore)
+                // Don't persist — auth is per-action only
                 const callback = pendingAdminAction;
                 pendingAdminAction = null;
                 closeAdminPinModal();
-                // Execute the pending action AFTER closing the PIN modal
                 if (callback) {
                     setTimeout(() => callback(), 150);
                 }
