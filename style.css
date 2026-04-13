@@ -679,12 +679,17 @@ h1 .accent {
 }
 
 .branch-card-overlay p {
-    font-size: 0.78rem;
-    color: rgba(255, 255, 255, 0.5);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-weight: 300;
-    margin-bottom: 1rem;
+    display: block !important;
+    font-size: 0.72rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3.5px !important;
+    font-weight: 500 !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 1rem !important;
+    padding-left: 0.2rem;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .branch-card-cta {
@@ -2053,14 +2058,16 @@ h1 .accent {
 }
 
 .branch-card-overlay p {
-    display: block;
-    font-size: 0.72rem;
-    color: rgba(255, 255, 255, 0.75);
-    text-transform: uppercase;
-    letter-spacing: 3.5px;
-    font-weight: 400;
-    margin-top: 0.5rem;
+    display: block !important;
+    font-size: 0.72rem !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 3.5px !important;
+    font-weight: 500 !important;
+    margin-top: 0.5rem !important;
     padding-left: 0.2rem;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .branch-card-cta {
