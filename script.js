@@ -1158,6 +1158,21 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
     let offerTimerInterval = null;
     let bannerDismissed = false;
 
+    // Offer image lightbox (click to zoom)
+    const offerImgLb = document.getElementById('offer-img-lightbox');
+    const offerImgLbImg = document.getElementById('offer-img-lb-img');
+    const offerImgLbClose = document.getElementById('offer-img-lb-close');
+    if (offersBannerImg && offerImgLb && offerImgLbImg) {
+        offersBannerImg.addEventListener('click', () => {
+            if (offersBannerImg.src && offersBannerImg.style.display !== 'none') {
+                offerImgLbImg.src = offersBannerImg.src;
+                offerImgLb.classList.add('active');
+            }
+        });
+    }
+    if (offerImgLbClose) offerImgLbClose.addEventListener('click', () => offerImgLb.classList.remove('active'));
+    if (offerImgLb) offerImgLb.addEventListener('click', (e) => { if (e.target === offerImgLb) offerImgLb.classList.remove('active'); });
+
     function showOfferBanner() {
         // Filter expired
         const now = Date.now();
