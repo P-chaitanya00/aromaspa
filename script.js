@@ -279,18 +279,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modal) return;
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        gsap.from('#booking-modal .modal-content', { y: 60, opacity: 0, duration: 0.7, ease: 'power4.out' });
+        gsap.from('#booking-modal .modal-content', { y: 30, opacity: 0, duration: 0.2, ease: 'power4.out' });
     }
     function closeModal() {
         if (!modal) return;
-        gsap.to('#booking-modal .modal-content', {
-            y: 40, opacity: 0, duration: 0.4, ease: 'power2.in',
-            onComplete: () => {
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
-                gsap.set('#booking-modal .modal-content', { clearProps: 'all' });
-            }
-        });
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+        gsap.set('#booking-modal .modal-content', { clearProps: 'all' });
     }
 
     openBtns.forEach(btn => btn.addEventListener('click', openModal));
@@ -310,17 +305,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function openPModal() {
         pModal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        gsap.from('#partnership-modal .modal-content', { y: 60, opacity: 0, duration: 0.7, ease: 'power4.out' });
+        gsap.from('#partnership-modal .modal-content', { y: 30, opacity: 0, duration: 0.2, ease: 'power4.out' });
     }
     function closePModal() {
-        gsap.to('#partnership-modal .modal-content', {
-            y: 40, opacity: 0, duration: 0.4, ease: 'power2.in',
-            onComplete: () => {
-                pModal.classList.remove('active');
-                document.body.style.overflow = '';
-                gsap.set('#partnership-modal .modal-content', { clearProps: 'all' });
-            }
-        });
+        pModal.classList.remove('active');
+        document.body.style.overflow = '';
+        gsap.set('#partnership-modal .modal-content', { clearProps: 'all' });
     }
 
     pOpenBtns.forEach(btn => btn.addEventListener('click', openPModal));
@@ -1486,7 +1476,7 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
                 pendingAdminAction = null;
                 closeAdminPinModal();
                 if (callback) {
-                    setTimeout(() => callback(), 150);
+                    setTimeout(() => callback(), 50);
                 }
             } else {
                 if (adminPinError) {
