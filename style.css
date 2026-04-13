@@ -1260,29 +1260,32 @@ h1 .accent {
 .feat {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 1.5rem;
+    align-items: baseline;
+    gap: 1.2rem;
     padding: 1.4rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .feat span {
     font-family: var(--sans);
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--gold);
     font-weight: 700;
     letter-spacing: 2px;
-    min-width: 36px;
+    min-width: 32px;
     flex-shrink: 0;
+    line-height: 1;
 }
 
 .feat p {
-    font-family: var(--sans);
-    font-size: 0.92rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 400;
-    letter-spacing: 0.5px;
-    line-height: 1.4;
+    font-family: var(--sans) !important;
+    font-size: 0.92rem !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 /* ─── Treatments ─── */
