@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     gsap.registerPlugin(ScrollTrigger);
 
+    // Early declarations for admin system (defined fully later)
+    var isAdminAuth = sessionStorage.getItem('aromaAdmin') === 'true';
+    var openAdminPinModal; // assigned in ADMIN PIN SYSTEM section
+
     // ═══ TREATMENT PRICING DATA ═══
     const treatmentPricing = {
         'Balinese Massage': [
@@ -394,6 +398,136 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(closePModal, 3500);
         });
     }
+
+    // ═══ PROMO GALLERY SYSTEM (Cloud) ═══
+    const PROMO_CLOUD_URL = 'https://api.npoint.io/2325129d3c35bc41baad';
+    const MAX_PROMO_IMAGES = 20;
+    let promoImages = [];
+
+    async function fetchPromoImages() {
+        try {
+            const res = await fetch(PROMO_CLOUD_URL);
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data.images)) {
+                    promoImages = data.images;
+                    return;
+                }
+            }
+        } catch (e) { /* fallback */ }
+        promoImages = [];
+    }
+
+    async function savePromoImages() {
+        try {
+            await fetch(PROMO_CLOUD_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ images: promoImages })
+            });
+        } catch (e) { console.warn('Promo gallery cloud sync failed', e); }
+    }
+
+    const promoGrid = document.getElementById('promo-gallery-grid');
+    const promoAddBtn = document.getElementById('promo-add-btn');
+    const promoImgUpload = document.getElementById('promo-img-upload');
+
+    function renderPromoGallery() {
+        if (!promoGrid) return;
+        promoGrid.innerHTML = '';
+        if (!promoImages.length) {
+            promoGrid.innerHTML = '<p style="text-align:center; color:rgba(255,255,255,0.3); grid-column:1/-1; padding:2rem 0; font-size:0.9rem;">No photos yet. Add some!</p>';
+            return;
+        }
+        promoImages.forEach((imgData, idx) => {
+            const div = document.createElement('div');
+            div.className = 'promo-gallery-item';
+            div.innerHTML = `
+                <img src="${imgData}" alt="Promo ${idx + 1}" loading="lazy">
+                <button class="promo-gallery-del" data-idx="${idx}" title="Delete">&times;</button>
+            `;
+            promoGrid.appendChild(div);
+        });
+
+        // Delete handlers - PIN gated
+        promoGrid.querySelectorAll('.promo-gallery-del').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const idx = parseInt(btn.dataset.idx);
+                pendingPromoDeleteIdx = idx;
+                if (isAdminAuth) {
+                    executePromoDelete();
+                } else {
+                    openAdminPinModal(executePromoDelete);
+                }
+            });
+        });
+    }
+
+    let pendingPromoDeleteIdx = null;
+
+    function executePromoDelete() {
+        if (pendingPromoDeleteIdx !== null && pendingPromoDeleteIdx < promoImages.length) {
+            promoImages.splice(pendingPromoDeleteIdx, 1);
+            savePromoImages();
+            renderPromoGallery();
+        }
+        pendingPromoDeleteIdx = null;
+    }
+
+    function compressPromoImage(file) {
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const max = 800;
+                    let w = img.width, h = img.height;
+                    if (w > h && w > max) { h = h * max / w; w = max; }
+                    else if (h > max) { w = w * max / h; h = max; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    resolve(canvas.toDataURL('image/jpeg', 0.82));
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Add button - PIN gated
+    if (promoAddBtn && promoImgUpload) {
+        promoAddBtn.addEventListener('click', () => {
+            if (isAdminAuth) {
+                promoImgUpload.click();
+            } else {
+                openAdminPinModal(() => promoImgUpload.click());
+            }
+        });
+
+        promoImgUpload.addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files);
+            if (!files.length) return;
+            const remaining = MAX_PROMO_IMAGES - promoImages.length;
+            if (remaining <= 0) {
+                alert(`Maximum ${MAX_PROMO_IMAGES} photos allowed.`);
+                promoImgUpload.value = '';
+                return;
+            }
+            const toAdd = files.slice(0, remaining);
+            for (const file of toAdd) {
+                const compressed = await compressPromoImage(file);
+                promoImages.push(compressed);
+            }
+            await savePromoImages();
+            renderPromoGallery();
+            promoImgUpload.value = '';
+        });
+    }
+
+    // Init promo gallery
+    fetchPromoImages().then(() => renderPromoGallery());
 
     // ═══ FRANCHISE QUICK FORM ═══
     const fqForm = document.getElementById('franchise-quick-form');
@@ -1270,8 +1404,8 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
     });
 
     // ═══ ADMIN PIN SYSTEM ═══
-    const ADMIN_PIN = '1008'; // Change this to your desired PIN
-    let isAdminAuth = sessionStorage.getItem('aromaAdmin') === 'true';
+    const ADMIN_PIN = '1008';
+    // isAdminAuth already declared at top
     let pendingAdminAction = null;
 
     function showAdminElements() {
@@ -1303,7 +1437,7 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
     const adminPinError = document.getElementById('admin-pin-error');
     const pinDigits = document.querySelectorAll('.pin-digit');
 
-    function openAdminPinModal(callback) {
+    openAdminPinModal = function(callback) {
         pendingAdminAction = callback;
         if (adminPinModal) {
             adminPinModal.classList.add('active');
@@ -1312,7 +1446,7 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
             if (adminPinError) adminPinError.textContent = '';
             setTimeout(() => pinDigits[0]?.focus(), 100);
         }
-    }
+    };
 
     function closeAdminPinModal() {
         if (adminPinModal) {

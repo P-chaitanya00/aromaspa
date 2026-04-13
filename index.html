@@ -36,7 +36,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
-    <link rel="stylesheet" href="style.css?v=20260413u">
+    <link rel="stylesheet" href="style.css?v=20260413v">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -303,6 +303,26 @@
             <div class="carousel-item">
                 <div class="carousel-circle"><img src="assets/bodyscrub.png" alt="Body Scrub" loading="lazy"></div>
                 <span class="carousel-label">Body Polish</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Promo Gallery Section -->
+    <section class="promo-gallery-section">
+        <div class="container">
+            <div class="section-intro" style="text-align:center;">
+                <span class="label-tag">Gallery</span>
+                <h2>Our <em>Highlights</em></h2>
+            </div>
+            <div class="promo-gallery-grid" id="promo-gallery-grid">
+                <!-- Images loaded from cloud -->
+            </div>
+            <div style="text-align:center; margin-top:1.5rem;">
+                <button type="button" class="promo-add-btn" id="promo-add-btn" title="Add Image">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    <span>Add Photo</span>
+                </button>
+                <input type="file" id="promo-img-upload" accept="image/*" multiple style="display:none;">
             </div>
         </div>
     </section>
@@ -1335,7 +1355,7 @@
         </div>
     </div>
 
-    <script src="script.js?v=20260413u"></script>
+    <script src="script.js?v=20260413v"></script>
 </body>
 
 </html>
