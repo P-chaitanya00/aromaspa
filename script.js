@@ -1123,32 +1123,20 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
     // --- Cloud sync ---
     async function fetchOffersCloud() {
         try {
-            const res = await fetch(OFFERS_CLOUD_URL);
+            const res = await fetch(OFFERS_CLOUD_URL + '?t=' + Date.now());
             if (res.ok) {
                 const data = await res.json();
                 if (Array.isArray(data.offers)) {
-                    // Filter out expired offers
                     const now = Date.now();
                     offersData = data.offers.filter(o => !o.expiresAt || o.expiresAt > now);
                     return;
                 }
             }
-        } catch (e) { /* fallback to localStorage */ }
-        // Fallback: try localStorage
-        try {
-            const stored = localStorage.getItem('aromaOffers');
-            if (stored) {
-                const parsed = JSON.parse(stored);
-                if (Array.isArray(parsed)) {
-                    // Migrate old string-only format
-                    offersData = parsed.map(o => typeof o === 'string' ? { text: o, image: null, expiresAt: null } : o);
-                }
-            }
-        } catch (e) { offersData = []; }
+        } catch (e) { console.warn('Offers cloud fetch failed', e); }
+        offersData = [];
     }
 
     async function saveOffersCloud() {
-        localStorage.setItem('aromaOffers', JSON.stringify(offersData));
         try {
             await fetch(OFFERS_CLOUD_URL, {
                 method: 'POST',
@@ -1398,10 +1386,15 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
         });
     }
 
-    // --- Init offers from cloud ---
+    // --- Init offers from cloud + auto-refresh ---
     fetchOffersCloud().then(() => {
         setTimeout(startOfferRotation, 2500);
     });
+    // Poll cloud every 30s so all devices stay in sync
+    setInterval(async () => {
+        await fetchOffersCloud();
+        showOfferBanner();
+    }, 30000);
 
     // ═══ ADMIN PIN SYSTEM ═══
     const ADMIN_PIN = '1008';
