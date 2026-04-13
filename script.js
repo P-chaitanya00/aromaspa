@@ -648,11 +648,25 @@ document.addEventListener('DOMContentLoaded', () => {
         // Save to cloud (persistent for all devices)
         const url = GALLERY_BINS[branchIdx];
         if (url) {
+            const payload = JSON.stringify({ images: images });
+            console.log('Cloud save payload size:', (payload.length / 1024).toFixed(1), 'KB for branch', branchIdx);
             fetch(url, {
-                method: 'PATCH',
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ images: images })
-            }).catch(err => console.warn('Cloud save failed:', err));
+                body: payload
+            }).then(resp => {
+                if (!resp.ok) {
+                    return resp.text().then(txt => {
+                        console.error('Cloud save failed:', resp.status, txt);
+                        showImageToast('⚠️ Cloud sync error ' + resp.status + '. Saved locally.');
+                    });
+                } else {
+                    console.log('Cloud save OK for branch', branchIdx);
+                }
+            }).catch(err => {
+                console.warn('Cloud save network error:', err);
+                showImageToast('⚠️ Network error. Images saved locally.');
+            });
         }
     }
 
@@ -661,11 +675,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = GALLERY_BINS[branchIdx];
         if (!url) return;
         fetch(url)
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) {
+                    console.error('Cloud load HTTP error for branch', branchIdx, ':', r.status);
+                    return null;
+                }
+                return r.json();
+            })
             .then(data => {
+                if (!data) return;
                 if (data && Array.isArray(data.images)) {
-                    galleryCache[branchIdx] = data.images;
-                    localStorage.setItem(`aromaBranchImages_${branchIdx}`, JSON.stringify(data.images));
+                    const localImages = getBranchImages(branchIdx);
+                    console.log('Cloud load branch', branchIdx, ':', data.images.length, 'cloud images,', localImages.length, 'local images');
+                    // Only update if cloud has data (don't overwrite local with empty cloud)
+                    if (data.images.length > 0 || localImages.length === 0) {
+                        galleryCache[branchIdx] = data.images;
+                        localStorage.setItem(`aromaBranchImages_${branchIdx}`, JSON.stringify(data.images));
+                    } else if (localImages.length > 0 && data.images.length === 0) {
+                        // Local has images but cloud is empty — push local to cloud
+                        console.log('Local has images but cloud empty for branch', branchIdx, '— syncing to cloud...');
+                        saveBranchImages(branchIdx, localImages);
+                    }
                     // Re-render if this branch popup is currently open
                     if (branchPopup.classList.contains('active') && currentBranchIdx === branchIdx) {
                         renderGalleryStack();
@@ -673,7 +703,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             })
-            .catch(err => console.warn('Cloud load failed:', err));
+            .catch(err => console.warn('Cloud load failed for branch', branchIdx, ':', err));
     }
     // Pre-load both branches from cloud
     loadCloudGallery(0);
@@ -797,14 +827,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const maxSize = 1200;
+                        const maxSize = 500;
                         let w = img.width, h = img.height;
                         if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
                         else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
                         canvas.width = w;
                         canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        const compressed = canvas.toDataURL('image/jpeg', 0.85);
+                        const compressed = canvas.toDataURL('image/jpeg', 0.35);
                         images.push(compressed);
                         loaded++;
                         if (loaded === filesToProcess.length) {
