@@ -628,7 +628,7 @@ h1 .accent {
     transform: scale(1.07);
 }
 
-/* Glassmorphism overlay */
+/* Gradient overlay — no blur */
 .branch-card-overlay {
     position: absolute;
     bottom: 0;
@@ -641,8 +641,6 @@ h1 .accent {
         rgba(18, 14, 8, 0.72) 50%,
         transparent 100%
     );
-    backdrop-filter: blur(12px) saturate(1.3);
-    -webkit-backdrop-filter: blur(12px) saturate(1.3);
     border-top: 1px solid rgba(200, 169, 81, 0.12);
     transform: translateY(4px);
     transition: transform 0.5s var(--ease), background 0.5s var(--ease);
@@ -1937,8 +1935,6 @@ h1 .accent {
     margin-bottom: 0.5rem;
     display: inline-block;
     background: linear-gradient(135deg, rgba(200, 169, 81, 0.25), rgba(255, 220, 100, 0.1));
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(200, 169, 81, 0.4);
     padding: 0.35rem 1.1rem;
     border-radius: 50px;
@@ -1961,8 +1957,6 @@ h1 .accent {
     font-weight: 400;
     display: inline-block;
     background: rgba(255, 255, 255, 0.08);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.15);
     padding: 0.2rem 0.8rem;
     border-radius: 50px;
