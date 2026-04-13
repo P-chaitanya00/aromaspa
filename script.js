@@ -472,13 +472,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const max = 800;
+                    const max = 1200;
                     let w = img.width, h = img.height;
                     if (w > h && w > max) { h = h * max / w; w = max; }
                     else if (h > max) { w = w * max / h; h = max; }
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    resolve(canvas.toDataURL('image/jpeg', 0.82));
+                    resolve(canvas.toDataURL('image/jpeg', 0.88));
                 };
                 img.src = ev.target.result;
             };
@@ -988,14 +988,14 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const maxSize = 800;
+                        const maxSize = 1200;
                         let w = img.width, h = img.height;
                         if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
                         else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
                         canvas.width = w;
                         canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        const compressed = canvas.toDataURL('image/jpeg', 0.82);
+                        const compressed = canvas.toDataURL('image/jpeg', 0.88);
                         images.push(compressed);
                         loaded++;
                         if (loaded === filesToProcess.length) {
@@ -1267,13 +1267,13 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const max = 300;
+                    const max = 1200;
                     let w = img.width, h = img.height;
                     if (w > h && w > max) { h = h * max / w; w = max; }
                     else if (h > max) { w = w * max / h; h = max; }
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                    offerPendingImage = canvas.toDataURL('image/jpeg', 0.7);
+                    offerPendingImage = canvas.toDataURL('image/jpeg', 0.88);
                     if (offerImgName) offerImgName.textContent = '✓ Image';
                     if (offerImgLabel) offerImgLabel.classList.add('has-image');
                 };
