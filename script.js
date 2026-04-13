@@ -827,14 +827,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        const maxSize = 380;
+                        const maxSize = 800;
                         let w = img.width, h = img.height;
                         if (w > h && w > maxSize) { h = h * maxSize / w; w = maxSize; }
                         else if (h > maxSize) { w = w * maxSize / h; h = maxSize; }
                         canvas.width = w;
                         canvas.height = h;
                         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        const compressed = canvas.toDataURL('image/jpeg', 0.28);
+                        const compressed = canvas.toDataURL('image/jpeg', 0.82);
                         images.push(compressed);
                         loaded++;
                         if (loaded === filesToProcess.length) {
