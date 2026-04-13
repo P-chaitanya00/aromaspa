@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ═══ HERO REVEAL ═══
     function heroReveal() {
         const tl = gsap.timeline();
-        tl.from('.hero-bg img', { duration: 3, opacity: 0, ease: 'power2.out' })
+        tl.from('.hero-bg img', { duration: 2, scale: 1.05, ease: 'power2.out' })
             .from('.hero-badge', { opacity: 0, y: 30, duration: 1, ease: 'power4.out' }, '-=2')
             .from('h1 .line', {
                 y: '110%', opacity: 0, duration: 1.2, stagger: 0.15, ease: 'power4.out'
