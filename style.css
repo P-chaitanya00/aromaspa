@@ -1932,7 +1932,7 @@ h1 .accent {
     font-size: 1.3rem;
     font-weight: 700;
     color: #0a0700;
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
     display: inline-block;
     background: linear-gradient(135deg, #C8A951 0%, #E8C96A 50%, #C8A951 100%);
     border: none;
@@ -1942,6 +1942,7 @@ h1 .accent {
     letter-spacing: 1.5px;
     text-transform: uppercase;
     transition: all 0.4s var(--ease);
+    line-height: 1;
 }
 
 .branch-card:hover .branch-card-overlay h3 {
@@ -1951,16 +1952,14 @@ h1 .accent {
 }
 
 .branch-card-overlay p {
-    font-size: 0.75rem;
-    color: #fff;
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.75);
     text-transform: uppercase;
-    letter-spacing: 3px;
-    font-weight: 500;
-    display: inline-block;
-    background: rgba(255, 255, 255, 0.22);
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    padding: 0.25rem 0.9rem;
-    border-radius: 50px;
+    letter-spacing: 3.5px;
+    font-weight: 400;
+    margin-top: 0.5rem;
+    padding-left: 0.2rem;
 }
 
 .branch-card-cta {
