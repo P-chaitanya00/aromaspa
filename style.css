@@ -1039,10 +1039,11 @@ h1 .accent {
 }
 
 .ml-price {
-    font-family: var(--serif);
-    font-size: 1.6rem;
+    font-family: var(--sans);
+    font-size: 1.4rem;
     color: var(--gold);
-    font-style: italic;
+    font-weight: 600;
+    font-style: normal;
 }
 
 @media (max-width: 900px) {
@@ -1123,10 +1124,11 @@ h1 .accent {
 }
 
 .mem-price-tag {
-    font-family: var(--serif);
-    font-size: 3.2rem;
+    font-family: var(--sans);
+    font-size: 3rem;
     color: var(--gold);
-    font-style: italic;
+    font-weight: 700;
+    font-style: normal;
     line-height: 1;
     margin-bottom: 1rem;
 }
@@ -1447,10 +1449,11 @@ h1 .accent {
 }
 
 .rd-price-tag span {
-    font-family: var(--serif);
-    font-size: 1.6rem;
+    font-family: var(--sans);
+    font-size: 1.5rem;
     color: var(--gold);
-    font-weight: 600;
+    font-weight: 700;
+    font-style: normal;
 }
 
 .rd-dur-tag span {
