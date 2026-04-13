@@ -1397,7 +1397,8 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
     }, 30000);
 
     // ═══ ADMIN PIN SYSTEM ═══
-    const ADMIN_PIN = '1008';
+    const DEFAULT_PIN = '2580';
+    let ADMIN_PIN = localStorage.getItem('aromaAdminPin') || DEFAULT_PIN;
     // isAdminAuth already declared at top
     let pendingAdminAction = null;
 
@@ -1538,6 +1539,80 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
     }
 
     // Note: PIN check for add photo button is now handled inline in the click handler above (line ~590)
+
+    // ═══ RESET PIN SYSTEM ═══
+    const resetPinModal = document.getElementById('reset-pin-modal');
+    const resetPinLink = document.getElementById('reset-pin-link');
+    const resetPinClose = document.querySelector('.reset-pin-close');
+    const resetPinOverlay = document.querySelector('.reset-pin-overlay');
+    let resetVerifyCode = null;
+
+    function openResetPinModal() {
+        if (!resetPinModal) return;
+        document.getElementById('reset-step-1').style.display = '';
+        document.getElementById('reset-step-2').style.display = 'none';
+        document.getElementById('reset-step-3').style.display = 'none';
+        resetPinModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeResetPinModal() {
+        if (!resetPinModal) return;
+        resetPinModal.classList.remove('active');
+        document.body.style.overflow = '';
+        resetVerifyCode = null;
+    }
+
+    if (resetPinLink) resetPinLink.addEventListener('click', openResetPinModal);
+    if (resetPinClose) resetPinClose.addEventListener('click', closeResetPinModal);
+    if (resetPinOverlay) resetPinOverlay.addEventListener('click', closeResetPinModal);
+
+    // Step 1: Send verification code via WhatsApp
+    const resetSendCodeBtn = document.getElementById('reset-send-code');
+    if (resetSendCodeBtn) {
+        resetSendCodeBtn.addEventListener('click', () => {
+            resetVerifyCode = String(Math.floor(100000 + Math.random() * 900000));
+            const msg = `*AROMA SPA - PIN Reset*\n\nYour verification code is: *${resetVerifyCode}*\n\nDo not share this code with anyone.`;
+            window.open(`https://wa.me/919666000734?text=${encodeURIComponent(msg)}`, '_blank');
+            document.getElementById('reset-step-1').style.display = 'none';
+            document.getElementById('reset-step-2').style.display = '';
+            const codeInput = document.getElementById('reset-code-input');
+            if (codeInput) { codeInput.value = ''; setTimeout(() => codeInput.focus(), 200); }
+            document.getElementById('reset-code-error').textContent = '';
+        });
+    }
+
+    // Step 2: Verify code
+    const resetVerifyBtn = document.getElementById('reset-verify-code');
+    if (resetVerifyBtn) {
+        resetVerifyBtn.addEventListener('click', () => {
+            const entered = document.getElementById('reset-code-input').value.trim();
+            if (entered === resetVerifyCode) {
+                document.getElementById('reset-step-2').style.display = 'none';
+                document.getElementById('reset-step-3').style.display = '';
+                const newPinInput = document.getElementById('reset-new-pin');
+                if (newPinInput) { newPinInput.value = ''; setTimeout(() => newPinInput.focus(), 200); }
+            } else {
+                document.getElementById('reset-code-error').textContent = 'Incorrect code. Try again.';
+            }
+        });
+    }
+
+    // Step 3: Save new PIN
+    const resetSaveBtn = document.getElementById('reset-save-pin');
+    if (resetSaveBtn) {
+        resetSaveBtn.addEventListener('click', () => {
+            const newPin = document.getElementById('reset-new-pin').value.trim();
+            if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) {
+                alert('PIN must be exactly 4 digits.');
+                return;
+            }
+            ADMIN_PIN = newPin;
+            localStorage.setItem('aromaAdminPin', newPin);
+            closeResetPinModal();
+            alert('✅ PIN updated successfully!');
+        });
+    }
 
     // ═══ IMAGE PROTECTION — Prevent Download ═══
     // Disable right-click on all images
