@@ -1535,60 +1535,47 @@ I am interested in the franchise opportunity. Please contact me. Thank you!`;
     const resetPinLink = document.getElementById('reset-pin-link');
     const resetPinClose = document.querySelector('.reset-pin-close');
     const resetPinOverlay = document.querySelector('.reset-pin-overlay');
-    let resetVerifyCode = null;
 
     function openResetPinModal() {
         if (!resetPinModal) return;
         document.getElementById('reset-step-1').style.display = '';
         document.getElementById('reset-step-2').style.display = 'none';
-        document.getElementById('reset-step-3').style.display = 'none';
+        const curInput = document.getElementById('reset-current-pin');
+        if (curInput) curInput.value = '';
+        const errEl = document.getElementById('reset-current-error');
+        if (errEl) errEl.textContent = '';
         resetPinModal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        if (curInput) setTimeout(() => curInput.focus(), 100);
     }
 
     function closeResetPinModal() {
         if (!resetPinModal) return;
         resetPinModal.classList.remove('active');
         document.body.style.overflow = '';
-        resetVerifyCode = null;
     }
 
     if (resetPinLink) resetPinLink.addEventListener('click', openResetPinModal);
     if (resetPinClose) resetPinClose.addEventListener('click', closeResetPinModal);
     if (resetPinOverlay) resetPinOverlay.addEventListener('click', closeResetPinModal);
 
-    // Step 1: Send verification code via WhatsApp
-    const resetSendCodeBtn = document.getElementById('reset-send-code');
-    if (resetSendCodeBtn) {
-        resetSendCodeBtn.addEventListener('click', () => {
-            resetVerifyCode = String(Math.floor(100000 + Math.random() * 900000));
-            const msg = `*AROMA SPA - PIN Reset*\n\nYour verification code is: *${resetVerifyCode}*\n\nDo not share this code with anyone.`;
-            window.open(`https://wa.me/919666000734?text=${encodeURIComponent(msg)}`, '_blank');
-            document.getElementById('reset-step-1').style.display = 'none';
-            document.getElementById('reset-step-2').style.display = '';
-            const codeInput = document.getElementById('reset-code-input');
-            if (codeInput) { codeInput.value = ''; setTimeout(() => codeInput.focus(), 200); }
-            document.getElementById('reset-code-error').textContent = '';
-        });
-    }
-
-    // Step 2: Verify code
-    const resetVerifyBtn = document.getElementById('reset-verify-code');
-    if (resetVerifyBtn) {
-        resetVerifyBtn.addEventListener('click', () => {
-            const entered = document.getElementById('reset-code-input').value.trim();
-            if (entered === resetVerifyCode) {
-                document.getElementById('reset-step-2').style.display = 'none';
-                document.getElementById('reset-step-3').style.display = '';
+    // Step 1: Verify current PIN
+    const resetVerifyCurrentBtn = document.getElementById('reset-verify-current');
+    if (resetVerifyCurrentBtn) {
+        resetVerifyCurrentBtn.addEventListener('click', () => {
+            const entered = document.getElementById('reset-current-pin').value.trim();
+            if (entered === ADMIN_PIN) {
+                document.getElementById('reset-step-1').style.display = 'none';
+                document.getElementById('reset-step-2').style.display = '';
                 const newPinInput = document.getElementById('reset-new-pin');
-                if (newPinInput) { newPinInput.value = ''; setTimeout(() => newPinInput.focus(), 200); }
+                if (newPinInput) { newPinInput.value = ''; setTimeout(() => newPinInput.focus(), 100); }
             } else {
-                document.getElementById('reset-code-error').textContent = 'Incorrect code. Try again.';
+                document.getElementById('reset-current-error').textContent = 'Incorrect PIN. Try again.';
             }
         });
     }
 
-    // Step 3: Save new PIN
+    // Step 2: Save new PIN
     const resetSaveBtn = document.getElementById('reset-save-pin');
     if (resetSaveBtn) {
         resetSaveBtn.addEventListener('click', () => {

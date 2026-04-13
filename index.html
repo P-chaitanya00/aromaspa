@@ -814,28 +814,20 @@
                         <path d="M7 11V7a5 5 0 0110 0v4"/>
                     </svg>
                 </div>
-                <!-- Step 1: Send verification -->
+                <!-- Step 1: Enter current PIN -->
                 <div id="reset-step-1">
                     <h2 style="font-size:1.3rem;">Reset Admin PIN</h2>
-                    <p class="admin-pin-sub">A verification code will be sent to the registered number via WhatsApp.</p>
-                    <button type="button" id="reset-send-code" class="cta-primary" style="width:100%; justify-content:center; margin-top:1.5rem;">
-                        <span>Send Verification Code</span>
-                    </button>
-                </div>
-                <!-- Step 2: Enter code -->
-                <div id="reset-step-2" style="display:none;">
-                    <h2 style="font-size:1.3rem;">Enter Code</h2>
-                    <p class="admin-pin-sub">Enter the 6-digit code sent to WhatsApp.</p>
-                    <input type="text" id="reset-code-input" maxlength="6" inputmode="numeric"
+                    <p class="admin-pin-sub">Enter your current PIN to proceed.</p>
+                    <input type="password" id="reset-current-pin" maxlength="4" inputmode="numeric"
                         style="width:100%;padding:1rem;text-align:center;font-size:1.5rem;letter-spacing:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:var(--white);font-family:var(--sans);outline:none;margin-top:1rem;"
-                        placeholder="------">
-                    <p id="reset-code-error" style="color:#ff4d4d;font-size:0.8rem;margin-top:0.5rem;"></p>
-                    <button type="button" id="reset-verify-code" class="cta-primary" style="width:100%; justify-content:center; margin-top:1rem;">
+                        placeholder="••••">
+                    <p id="reset-current-error" style="color:#ff4d4d;font-size:0.8rem;margin-top:0.5rem;"></p>
+                    <button type="button" id="reset-verify-current" class="cta-primary" style="width:100%; justify-content:center; margin-top:1rem;">
                         <span>Verify</span>
                     </button>
                 </div>
-                <!-- Step 3: New PIN -->
-                <div id="reset-step-3" style="display:none;">
+                <!-- Step 2: Set new PIN -->
+                <div id="reset-step-2" style="display:none;">
                     <h2 style="font-size:1.3rem;">Set New PIN</h2>
                     <p class="admin-pin-sub">Enter your new 4-digit PIN.</p>
                     <input type="password" id="reset-new-pin" maxlength="4" inputmode="numeric"
@@ -1403,7 +1395,7 @@
         </div>
     </div>
 
-    <script src="script.js?v=20260413aa"></script>
+    <script src="script.js?v=20260413ab"></script>
 </body>
 
 </html>
