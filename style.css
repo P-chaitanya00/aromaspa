@@ -1161,6 +1161,95 @@ h1 .accent {
     }
 }
 
+/* ─── Membership WhatsApp Button ─── */
+.mem-wa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+    background: #25D366;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.3rem;
+    border-radius: 50px;
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+    box-shadow: 0 4px 16px rgba(37, 211, 102, 0.35);
+}
+
+.mem-wa-btn:hover {
+    background: #20bd5a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+}
+
+/* ─── Membership Branch Modal ─── */
+.mem-branch-panel {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+    border: 1px solid rgba(200, 169, 81, 0.2);
+    border-radius: 20px;
+    padding: 2rem 1.8rem;
+    width: 90%;
+    max-width: 340px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+}
+
+.mem-branch-label {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 1.4rem !important;
+    font-weight: 500;
+}
+
+.mem-branch-choice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    margin-bottom: 0.8rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(200,169,81,0.25);
+    border-radius: 12px;
+    color: var(--white);
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+}
+
+.mem-branch-choice:hover {
+    background: rgba(200,169,81,0.12);
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+}
+
+#mem-branch-cancel {
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.35);
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 0.4rem;
+    transition: color 0.3s;
+}
+
+#mem-branch-cancel:hover { color: rgba(255,255,255,0.7); }
+
 /* ─── About ─── */
 #about {
     padding: 12rem 0 4rem 0;

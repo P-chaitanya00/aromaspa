@@ -1285,7 +1285,70 @@ document.addEventListener('DOMContentLoaded', () => {
             if (branchPopup && branchPopup.classList.contains('active')) return closeBranchPopup();
             if (pModal && pModal.classList.contains('active')) return closePModal();
             if (modal && modal.classList.contains('active')) return closeModal();
+            // Close membership branch modal on Escape
+            const memModal = document.getElementById('mem-branch-modal');
+            if (memModal && memModal.style.display === 'flex') closeMembershipModal();
         }
     });
+
+    // ═══ MEMBERSHIP WHATSAPP ENQUIRY ═══
+    const memBranchModal = document.getElementById('mem-branch-modal');
+    const memBranchBackdrop = document.getElementById('mem-branch-backdrop');
+    const memBranchCancel = document.getElementById('mem-branch-cancel');
+    const memBranchChoices = document.querySelectorAll('.mem-branch-choice');
+    let activeMembershipData = { package: '', price: '' };
+
+    function openMembershipModal(pkg, price) {
+        activeMembershipData = { package: pkg, price: price };
+        memBranchModal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMembershipModal() {
+        memBranchModal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
+
+    // WA button click on each membership card
+    document.querySelectorAll('.mem-wa-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const wrap = btn.closest('.mem-price-wrap');
+            const pkg = wrap ? wrap.dataset.package : '';
+            const price = wrap ? wrap.dataset.price : '';
+            openMembershipModal(pkg, price);
+        });
+    });
+
+    // Branch selection → open WhatsApp
+    memBranchChoices.forEach(choice => {
+        choice.addEventListener('click', () => {
+            const wa = choice.dataset.wa;
+            const branch = choice.dataset.branch;
+            const { package: pkg, price } = activeMembershipData;
+
+            const msg =
+`*AROMA INTERNATIONAL SPA*
+*Membership Enquiry*
+━━━━━━━━━━━━━━━━━━━━
+
+Package : ${pkg}
+Price   : ${price}
+Branch  : ${branch}
+
+━━━━━━━━━━━━━━━━━━━━
+*My Details:*
+Name    : 
+Phone   : 
+City    : 
+
+I am interested in this membership. Please contact me at the earliest. Thank you!`;
+
+            closeMembershipModal();
+            window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+        });
+    });
+
+    if (memBranchBackdrop) memBranchBackdrop.addEventListener('click', closeMembershipModal);
+    if (memBranchCancel) memBranchCancel.addEventListener('click', closeMembershipModal);
 
 });
