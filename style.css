@@ -1259,25 +1259,30 @@ h1 .accent {
 
 .feat {
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 1.2rem 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    padding: 1.4rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .feat span {
-    font-family: var(--serif);
-    font-size: 1.6rem;
+    font-family: var(--sans);
+    font-size: 1.1rem;
     color: var(--gold);
-    font-weight: 300;
-    min-width: 40px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    line-height: 1;
 }
 
 .feat p {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.7);
-    font-weight: 300;
-    letter-spacing: 1px;
+    font-family: var(--sans);
+    font-size: 0.92rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+    margin-top: 0.2rem;
 }
 
 /* ─── Treatments ─── */
