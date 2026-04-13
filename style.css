@@ -3031,7 +3031,7 @@ h1 .accent {
     font-family: var(--sans);
     font-size: 0.65rem;
     color: var(--gold);
-    background: rgba(200,169,81,0.1);
+    background: #000;
     padding: 0.25rem 0.6rem;
     border-radius: 20px;
     white-space: nowrap;
