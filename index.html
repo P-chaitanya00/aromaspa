@@ -36,7 +36,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/logo.png">
     <link rel="apple-touch-icon" href="assets/logo.png">
-    <link rel="stylesheet" href="style.css?v=20260413q">
+    <link rel="stylesheet" href="style.css?v=20260413r">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -1201,8 +1201,12 @@
     <!-- Floating Offers Banner -->
     <div id="offers-banner" class="offers-banner">
         <div class="offers-banner-inner">
-            <span class="offers-icon">🔥</span>
-            <span id="offers-text" class="offers-text">Loading offers...</span>
+            <img id="offers-banner-img" class="offers-banner-img" src="" alt="" style="display:none;">
+            <div class="offers-banner-content">
+                <span class="offers-icon">🔥</span>
+                <span id="offers-text" class="offers-text">Loading offers...</span>
+            </div>
+            <span id="offers-timer" class="offers-timer" style="display:none;"></span>
         </div>
         <button id="offers-banner-close" class="offers-banner-close">&times;</button>
     </div>
@@ -1215,12 +1219,31 @@
             <div class="offers-admin-header">
                 <span class="label-tag">Admin</span>
                 <h2>Manage <em>Offers</em></h2>
-                <p class="offers-admin-sub">Add, edit or remove offers. Changes appear instantly on the site.</p>
+                <p class="offers-admin-sub">Add, edit or remove offers. Visible to all visitors.</p>
             </div>
             <div class="offers-admin-body">
                 <div class="offers-add-row">
                     <input type="text" id="offer-input" class="offer-input"
-                        placeholder="Type your offer (e.g. 20% off Balinese Massage today!)">
+                        placeholder="Type your offer (e.g. 20% off Balinese Massage!)">
+                </div>
+                <div class="offers-add-row" style="gap:0.6rem;">
+                    <select id="offer-timer-select" class="offer-input" style="flex:1; min-width:0;">
+                        <option value="0">No Timer</option>
+                        <option value="1">1 Hour</option>
+                        <option value="2">2 Hours</option>
+                        <option value="4">4 Hours</option>
+                        <option value="8">8 Hours</option>
+                        <option value="12">12 Hours</option>
+                        <option value="24">1 Day</option>
+                        <option value="48">2 Days</option>
+                        <option value="72">3 Days</option>
+                        <option value="168">7 Days</option>
+                    </select>
+                    <label class="offer-img-label" id="offer-img-label" title="Add Image">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span id="offer-img-name">+ Image</span>
+                        <input type="file" id="offer-img-upload" accept="image/*" style="display:none;">
+                    </label>
                     <button id="add-offer-btn" class="cta-primary offer-add-btn"><span>Add</span></button>
                 </div>
                 <ul id="offers-list" class="offers-list"></ul>
@@ -1276,7 +1299,7 @@
         </div>
     </div>
 
-    <script src="script.js?v=20260413k"></script>
+    <script src="script.js?v=20260413r"></script>
 </body>
 
 </html>

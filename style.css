@@ -3001,6 +3001,94 @@ h1 .accent {
     }
 }
 
+/* ─── Offers Banner Image & Timer ─── */
+.offers-banner-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex: 1;
+    overflow: hidden;
+}
+
+.offers-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.offers-banner-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(200,169,81,0.3);
+}
+
+.offers-timer {
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    color: var(--gold);
+    background: rgba(200,169,81,0.1);
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ─── Offer Image Upload Label ─── */
+.offer-img-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.7rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px dashed rgba(200,169,81,0.35);
+    border-radius: 12px;
+    color: var(--gold);
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s var(--ease);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.offer-img-label:hover {
+    background: rgba(200,169,81,0.1);
+    border-color: var(--gold);
+}
+
+.offer-img-label.has-image {
+    border-color: #25D366;
+    color: #25D366;
+}
+
+/* ─── Offer List Thumbnails ─── */
+.offer-list-thumb {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid rgba(200,169,81,0.2);
+}
+
+.offer-list-timer-badge {
+    font-size: 0.6rem;
+    color: var(--gold);
+    background: rgba(200,169,81,0.1);
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    white-space: nowrap;
+    margin-left: 0.4rem;
+}
+
 /* ─── Offers Navbar Button ─── */
 .nav-offers-btn {
     background: linear-gradient(135deg, var(--gold) 0%, #E8D5A3 100%);

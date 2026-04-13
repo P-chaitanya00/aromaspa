@@ -944,41 +944,116 @@ document.addEventListener('DOMContentLoaded', () => {
         branchObserver.observe(branchSection);
     }
 
-    // ═══ OFFERS SYSTEM ═══
-    const defaultOffers = [];
+    // ═══ OFFERS SYSTEM (Cloud + Image + Timer) ═══
+    const OFFERS_CLOUD_URL = 'https://api.npoint.io/6caca674995104e53428';
+    let offersData = []; // each: { text, image, expiresAt }
+    let offerPendingImage = null;
 
-    function getOffers() {
-        const stored = localStorage.getItem('aromaOffers');
-        if (stored) {
-            try { return JSON.parse(stored); } catch (e) { /* ignore */ }
-        }
-        return defaultOffers;
+    // --- Cloud sync ---
+    async function fetchOffersCloud() {
+        try {
+            const res = await fetch(OFFERS_CLOUD_URL);
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data.offers)) {
+                    // Filter out expired offers
+                    const now = Date.now();
+                    offersData = data.offers.filter(o => !o.expiresAt || o.expiresAt > now);
+                    return;
+                }
+            }
+        } catch (e) { /* fallback to localStorage */ }
+        // Fallback: try localStorage
+        try {
+            const stored = localStorage.getItem('aromaOffers');
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    // Migrate old string-only format
+                    offersData = parsed.map(o => typeof o === 'string' ? { text: o, image: null, expiresAt: null } : o);
+                }
+            }
+        } catch (e) { offersData = []; }
     }
 
-    function saveOffers(offers) {
-        localStorage.setItem('aromaOffers', JSON.stringify(offers));
+    async function saveOffersCloud() {
+        localStorage.setItem('aromaOffers', JSON.stringify(offersData));
+        try {
+            await fetch(OFFERS_CLOUD_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ offers: offersData })
+            });
+        } catch (e) { console.warn('Offers cloud sync failed', e); }
+    }
+
+    // --- Timer helpers ---
+    function formatCountdown(ms) {
+        if (ms <= 0) return 'Expired';
+        const h = Math.floor(ms / 3600000);
+        const m = Math.floor((ms % 3600000) / 60000);
+        const s = Math.floor((ms % 60000) / 1000);
+        if (h > 24) return Math.floor(h / 24) + 'd ' + (h % 24) + 'h left';
+        if (h > 0) return h + 'h ' + m + 'm left';
+        return m + 'm ' + s + 's left';
     }
 
     // --- Floating Banner ---
     const offersBanner = document.getElementById('offers-banner');
     const offersTextEl = document.getElementById('offers-text');
     const offersBannerClose = document.getElementById('offers-banner-close');
+    const offersBannerImg = document.getElementById('offers-banner-img');
+    const offersTimerEl = document.getElementById('offers-timer');
     let offerIdx = 0;
     let offerInterval = null;
+    let offerTimerInterval = null;
     let bannerDismissed = false;
 
     function showOfferBanner() {
-        const offers = getOffers();
-        if (!offers.length || bannerDismissed) {
+        // Filter expired
+        const now = Date.now();
+        const active = offersData.filter(o => !o.expiresAt || o.expiresAt > now);
+        if (!active.length || bannerDismissed) {
             if (offersBanner) offersBanner.classList.add('hidden');
+            if (offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
             return;
         }
-        offerIdx = offerIdx % offers.length;
+        offerIdx = offerIdx % active.length;
+        const offer = active[offerIdx];
         if (offersTextEl) {
             offersTextEl.style.animation = 'none';
             void offersTextEl.offsetWidth;
-            offersTextEl.textContent = offers[offerIdx];
+            offersTextEl.textContent = offer.text;
             offersTextEl.style.animation = 'offerFadeText 0.5s ease forwards';
+        }
+        // Image
+        if (offersBannerImg) {
+            if (offer.image) {
+                offersBannerImg.src = offer.image;
+                offersBannerImg.style.display = 'block';
+            } else {
+                offersBannerImg.style.display = 'none';
+            }
+        }
+        // Timer
+        if (offersTimerEl) {
+            if (offerTimerInterval) { clearInterval(offerTimerInterval); offerTimerInterval = null; }
+            if (offer.expiresAt) {
+                offersTimerEl.style.display = 'inline-block';
+                const updateTimer = () => {
+                    const remaining = offer.expiresAt - Date.now();
+                    if (remaining <= 0) {
+                        offersTimerEl.textContent = 'Expired';
+                        clearInterval(offerTimerInterval);
+                    } else {
+                        offersTimerEl.textContent = '⏱ ' + formatCountdown(remaining);
+                    }
+                };
+                updateTimer();
+                offerTimerInterval = setInterval(updateTimer, 1000);
+            } else {
+                offersTimerEl.style.display = 'none';
+            }
         }
         if (offersBanner) offersBanner.classList.remove('hidden');
         offerIdx++;
@@ -987,7 +1062,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startOfferRotation() {
         if (offerInterval) clearInterval(offerInterval);
         showOfferBanner();
-        offerInterval = setInterval(showOfferBanner, 4000);
+        offerInterval = setInterval(showOfferBanner, 5000);
     }
 
     if (offersBannerClose) {
@@ -995,16 +1070,13 @@ document.addEventListener('DOMContentLoaded', () => {
             bannerDismissed = true;
             offersBanner.classList.add('hidden');
             if (offerInterval) clearInterval(offerInterval);
-            // Re-show after 30 seconds
+            if (offerTimerInterval) clearInterval(offerTimerInterval);
             setTimeout(() => {
                 bannerDismissed = false;
                 startOfferRotation();
             }, 30000);
         });
     }
-
-    // Start after preloader finishes
-    setTimeout(startOfferRotation, 2500);
 
     // --- Admin Modal ---
     const offersAdminModal = document.getElementById('offers-admin-modal');
@@ -1016,6 +1088,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const offersEmpty = document.getElementById('offers-empty');
     const openOffersAdmin = document.getElementById('open-offers-admin');
     const mobileOffersBtn = document.getElementById('mobile-offers-btn');
+    const offerTimerSelect = document.getElementById('offer-timer-select');
+    const offerImgUpload = document.getElementById('offer-img-upload');
+    const offerImgLabel = document.getElementById('offer-img-label');
+    const offerImgName = document.getElementById('offer-img-name');
+
+    // Image upload handler
+    if (offerImgUpload) {
+        offerImgUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const max = 300;
+                    let w = img.width, h = img.height;
+                    if (w > h && w > max) { h = h * max / w; w = max; }
+                    else if (h > max) { w = w * max / h; h = max; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    offerPendingImage = canvas.toDataURL('image/jpeg', 0.7);
+                    if (offerImgName) offerImgName.textContent = '✓ Image';
+                    if (offerImgLabel) offerImgLabel.classList.add('has-image');
+                };
+                img.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
     function openOffersModal() {
         if (offersAdminModal) {
@@ -1033,64 +1135,82 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Offers admin buttons — handled by admin PIN system below
-    // (original direct listeners removed — PIN gate added at bottom of file)
     if (offersAdminClose) offersAdminClose.addEventListener('click', closeOffersModal);
     if (offersAdminOverlay) offersAdminOverlay.addEventListener('click', closeOffersModal);
 
     function renderOffersList() {
-        const offers = getOffers();
         if (!offersListEl) return;
         offersListEl.innerHTML = '';
-        if (offersEmpty) offersEmpty.classList.toggle('hide', offers.length > 0);
-        offers.forEach((text, i) => {
+        const now = Date.now();
+        // Filter expired
+        offersData = offersData.filter(o => !o.expiresAt || o.expiresAt > now);
+        if (offersEmpty) offersEmpty.classList.toggle('hide', offersData.length > 0);
+        offersData.forEach((offer, i) => {
             const li = document.createElement('li');
+            li.style.display = 'flex';
+            li.style.alignItems = 'center';
+            li.style.gap = '0.6rem';
+            let thumbHtml = offer.image ? `<img class="offer-list-thumb" src="${offer.image}" alt="">` : '';
+            let timerHtml = '';
+            if (offer.expiresAt) {
+                const rem = offer.expiresAt - now;
+                timerHtml = `<span class="offer-list-timer-badge">${formatCountdown(rem)}</span>`;
+            }
             li.innerHTML = `
-                <span class="offer-text">${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</span>
+                ${thumbHtml}
+                <span class="offer-text" style="flex:1;">${offer.text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}${timerHtml}</span>
                 <div class="offer-actions">
-                    <button class="offer-btn edit-btn" data-idx="${i}" title="Edit">✏️</button>
                     <button class="offer-btn delete-btn" data-idx="${i}" title="Delete">🗑️</button>
                 </div>
             `;
             offersListEl.appendChild(li);
         });
 
-        // Attach edit/delete handlers
-        offersListEl.querySelectorAll('.edit-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idx = parseInt(btn.dataset.idx);
-                const offers = getOffers();
-                const newText = prompt('Edit offer:', offers[idx]);
-                if (newText !== null && newText.trim()) {
-                    offers[idx] = newText.trim();
-                    saveOffers(offers);
-                    renderOffersList();
-                    offerIdx = 0;
-                    showOfferBanner();
-                }
-            });
-        });
-
+        // Delete handler — PIN gated
         offersListEl.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const idx = parseInt(btn.dataset.idx);
-                const offers = getOffers();
-                offers.splice(idx, 1);
-                saveOffers(offers);
-                renderOffersList();
-                offerIdx = 0;
-                showOfferBanner();
+                pendingOfferDeleteIdx = idx;
+                if (isAdminAuth) {
+                    executeOfferDelete();
+                } else {
+                    openAdminPinModal(executeOfferDelete);
+                }
             });
         });
+    }
+
+    let pendingOfferDeleteIdx = null;
+
+    function executeOfferDelete() {
+        if (pendingOfferDeleteIdx !== null && pendingOfferDeleteIdx < offersData.length) {
+            offersData.splice(pendingOfferDeleteIdx, 1);
+            saveOffersCloud();
+            renderOffersList();
+            offerIdx = 0;
+            showOfferBanner();
+        }
+        pendingOfferDeleteIdx = null;
     }
 
     if (addOfferBtn) {
         addOfferBtn.addEventListener('click', () => {
             const val = offerInput ? offerInput.value.trim() : '';
             if (!val) return;
-            const offers = getOffers();
-            offers.push(val);
-            saveOffers(offers);
+            const hours = offerTimerSelect ? parseInt(offerTimerSelect.value) : 0;
+            const expiresAt = hours > 0 ? Date.now() + hours * 3600000 : null;
+            offersData.push({
+                text: val,
+                image: offerPendingImage || null,
+                expiresAt: expiresAt
+            });
+            saveOffersCloud();
             if (offerInput) offerInput.value = '';
+            if (offerTimerSelect) offerTimerSelect.value = '0';
+            offerPendingImage = null;
+            if (offerImgName) offerImgName.textContent = '+ Image';
+            if (offerImgLabel) offerImgLabel.classList.remove('has-image');
+            if (offerImgUpload) offerImgUpload.value = '';
             renderOffersList();
             offerIdx = 0;
             bannerDismissed = false;
@@ -1106,6 +1226,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- Init offers from cloud ---
+    fetchOffersCloud().then(() => {
+        setTimeout(startOfferRotation, 2500);
+    });
 
     // ═══ ADMIN PIN SYSTEM ═══
     const ADMIN_PIN = '1008'; // Change this to your desired PIN
